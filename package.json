@@ -1,32 +1,19 @@
 {
-  "name": "sgp",
+  "name": "SGP",
   "version": "1.0.0",
-  "description": "��#\u0000 \u0000D\u0000e\u0000c\u0000e\u0000n\u0000t\u0000r\u0000a\u0000l\u0000i\u0000z\u0000e\u0000d\u0000-\u0000O\u0000r\u0000a\u0000c\u0000l\u0000e\u0000-\u0000S\u0000y\u0000s\u0000t\u0000e\u0000m\u0000\r\u0000 \u0000",
+  "description": "Decentralized Weather Oracle with Multi-node Median Aggregation",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npx hardhat node",
+    "deploy": "npx hardhat run scripts/deploy.js --network localhost",
+    "test": "npx hardhat test"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Jeel-Pipaliya/Decentralized-Oracle-System.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/Jeel-Pipaliya/Decentralized-Oracle-System/issues"
-  },
-  "homepage": "https://github.com/Jeel-Pipaliya/Decentralized-Oracle-System#readme",
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "@nomiclabs/hardhat-waffle": "^2.0.6",
-    "ethers": "^6.16.0",
-    "hardhat": "^2.22.0"
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "hardhat": "^2.20.0"
   },
   "dependencies": {
-    "axios": "^1.13.4",
-    "dotenv": "^17.2.4",
-    "express": "^5.2.1"
+    "dotenv": "^16.4.5",
+    "ethers": "^5.7.2"
   }
 }
