@@ -1,5 +1,5 @@
 {
-  "name": "SGP",
+  "name": "sgp",
   "version": "1.0.0",
   "description": "Decentralized Weather Oracle with Multi-node Median Aggregation",
   "main": "index.js",
@@ -13,7 +13,20 @@
     "hardhat": "^2.20.0"
   },
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "ethers": "^5.7.2"
-  }
+    "axios": "^1.13.5",
+    "dotenv": "^16.6.1",
+    "ethers": "^6.16.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jeel-Pipaliya/Decentralized-Oracle-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Jeel-Pipaliya/Decentralized-Oracle-System/issues"
+  },
+  "homepage": "https://github.com/Jeel-Pipaliya/Decentralized-Oracle-System#readme"
 }
