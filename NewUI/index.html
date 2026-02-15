@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decentralized Weather Oracle</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-noise" aria-hidden="true"></div>
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div class="brand-text">
+          <span class="brand-name">Weather Oracle</span>
+          <span class="brand-tag">Decentralized weather oracle improvement system</span>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#status">API Status</a>
+        <a href="#median">Median Lab</a>
+        <a href="#pulse">Network Pulse</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#dashboard">Dashboard</a>
+      </nav>
+      <button class="ghost-button">Docs</button>
+    </header>
+
+    <main>
+      <section class="hero" id="overview">
+        <div class="hero-copy">
+          <p class="eyebrow">Real-world weather data for smart contracts</p>
+          <h1>Median-validated weather data you can trust.</h1>
+          <p class="hero-body">
+            A decentralized weather oracle network that pulls data from multiple
+            nodes, filters outliers using median aggregation, and stores the final
+            trusted result on-chain for apps like crop insurance.
+          </p>
+          <div class="hero-actions">
+            <button class="primary-button">View Live Status</button>
+            <button class="ghost-button">Explore Workflow</button>
+          </div>
+          <div class="hero-metrics">
+            <div class="metric">
+              <span class="metric-value" data-count="3">0</span>
+              <span class="metric-label">Oracle nodes</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value" data-count="5">0</span>
+              <span class="metric-label">Use cases covered</span>
+            </div>
+            <div class="metric">
+              <span class="metric-value" data-count="1">0</span>
+              <span class="metric-label">Median aggregation</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div class="panel-header">
+            <span class="panel-title">Median Output</span>
+            <span class="panel-chip">Outlier-safe</span>
+          </div>
+          <div class="panel-body">
+            <div class="panel-row">
+              <span>Temperature (C)</span>
+              <strong id="consensus-temp">27.1</strong>
+            </div>
+            <div class="panel-row">
+              <span>Rainfall (mm)</span>
+              <strong id="consensus-rain">9.6</strong>
+            </div>
+            <div class="panel-row">
+              <span>Humidity</span>
+              <strong id="consensus-humidity">68%</strong>
+            </div>
+            <div class="panel-divider"></div>
+            <div class="panel-note">
+              Median aggregation removes fake or extreme submissions before the
+              trusted weather result is stored on-chain.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="status">
+        <div class="section-header">
+          <h2>Real-time API status</h2>
+          <p>Monitor live feeds from OpenWeatherMap and internal oracle nodes.</p>
+        </div>
+        <div class="grid-4" id="api-grid">
+          <article class="card api-card" data-api="owm">
+            <div class="api-header">
+              <h3>OpenWeatherMap</h3>
+              <span class="status online">Healthy</span>
+            </div>
+            <div class="api-metric">
+              <span>Latency</span>
+              <strong data-latency="190">190 ms</strong>
+            </div>
+            <div class="api-metric">
+              <span>Requests</span>
+              <strong data-req="1420">1,420 / hr</strong>
+            </div>
+            <div class="api-metric">
+              <span>Last update</span>
+              <strong data-updated="12">12 sec ago</strong>
+            </div>
+          </article>
+          <article class="card api-card" data-api="node1">
+            <div class="api-header">
+              <h3>Node1 Feed</h3>
+              <span class="status online">Healthy</span>
+            </div>
+            <div class="api-metric">
+              <span>Latency</span>
+              <strong data-latency="210">210 ms</strong>
+            </div>
+            <div class="api-metric">
+              <span>Requests</span>
+              <strong data-req="860">860 / hr</strong>
+            </div>
+            <div class="api-metric">
+              <span>Last update</span>
+              <strong data-updated="18">18 sec ago</strong>
+            </div>
+          </article>
+          <article class="card api-card" data-api="node2">
+            <div class="api-header">
+              <h3>Node2 Feed</h3>
+              <span class="status online">Healthy</span>
+            </div>
+            <div class="api-metric">
+              <span>Latency</span>
+              <strong data-latency="235">235 ms</strong>
+            </div>
+            <div class="api-metric">
+              <span>Requests</span>
+              <strong data-req="790">790 / hr</strong>
+            </div>
+            <div class="api-metric">
+              <span>Last update</span>
+              <strong data-updated="22">22 sec ago</strong>
+            </div>
+          </article>
+          <article class="card api-card" data-api="node3">
+            <div class="api-header">
+              <h3>Node3 Feed</h3>
+              <span class="status warning">Delayed</span>
+            </div>
+            <div class="api-metric">
+              <span>Latency</span>
+              <strong data-latency="320">320 ms</strong>
+            </div>
+            <div class="api-metric">
+              <span>Requests</span>
+              <strong data-req="610">610 / hr</strong>
+            </div>
+            <div class="api-metric">
+              <span>Last update</span>
+              <strong data-updated="45">45 sec ago</strong>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="median">
+        <div class="section-header">
+          <h2>Interactive median lab</h2>
+          <p>Adjust node submissions to see how median aggregation filters outliers.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card median-card">
+            <div class="median-row">
+              <label for="node1-range">Node1 temperature</label>
+              <input id="node1-range" type="range" min="20" max="40" value="28" />
+              <span id="node1-value">28 C</span>
+            </div>
+            <div class="median-row">
+              <label for="node2-range">Node2 temperature</label>
+              <input id="node2-range" type="range" min="20" max="40" value="30" />
+              <span id="node2-value">30 C</span>
+            </div>
+            <div class="median-row">
+              <label for="node3-range">Node3 temperature</label>
+              <input id="node3-range" type="range" min="20" max="60" value="47" />
+              <span id="node3-value">47 C</span>
+            </div>
+            <div class="median-foot">
+              <span>Sorted values</span>
+              <strong id="median-sorted">28, 30, 47</strong>
+            </div>
+          </div>
+          <div class="card median-result">
+            <h3>Median output</h3>
+            <p class="median-value" id="median-output">30 C</p>
+            <p class="panel-note">
+              Extreme values are ignored, keeping the final result stable for smart
+              contract consumption.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="pulse">
+        <div class="section-header">
+          <h2>Network pulse</h2>
+          <p>Live history of node trust scores and median confidence.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card chart-card">
+            <div class="chart-header">
+              <h3>Trust score trend</h3>
+              <span class="panel-chip">Last 24 cycles</span>
+            </div>
+            <svg class="chart" viewBox="0 0 320 140" aria-hidden="true">
+              <path id="line-node1" class="chart-line line-a" d=""></path>
+              <path id="line-node2" class="chart-line line-b" d=""></path>
+              <path id="line-node3" class="chart-line line-c" d=""></path>
+            </svg>
+            <div class="chart-legend">
+              <span><i class="legend-dot dot-a"></i>Node1</span>
+              <span><i class="legend-dot dot-b"></i>Node2</span>
+              <span><i class="legend-dot dot-c"></i>Node3</span>
+            </div>
+          </div>
+          <div class="card pulse-card">
+            <h3>Median confidence</h3>
+            <div class="pulse-metric">
+              <span>Consensus stability</span>
+              <strong id="confidence-score">92%</strong>
+            </div>
+            <div class="pulse-metric">
+              <span>Outliers filtered</span>
+              <strong id="outlier-count">3</strong>
+            </div>
+            <div class="pulse-metric">
+              <span>Last aggregation</span>
+              <strong id="last-agg">32 sec ago</strong>
+            </div>
+            <div class="pulse-bar">
+              <div class="bar" id="confidence-bar" style="width: 92%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="workflow">
+        <div class="section-header">
+          <h2>System workflow</h2>
+          <p>From OpenWeatherMap data to on-chain delivery.</p>
+        </div>
+        <div class="flow animated-flow">
+          <div class="flow-step">
+            <span class="flow-index">01</span>
+            <h4>Fetch data</h4>
+            <p>Oracle nodes pull temperature and rainfall from the API.</p>
+          </div>
+          <div class="flow-step">
+            <span class="flow-index">02</span>
+            <h4>Submit values</h4>
+            <p>Each node submits its data to the smart contract.</p>
+          </div>
+          <div class="flow-step">
+            <span class="flow-index">03</span>
+            <h4>Aggregate</h4>
+            <p>Owner triggers the median aggregation function.</p>
+          </div>
+          <div class="flow-step">
+            <span class="flow-index">04</span>
+            <h4>Consume</h4>
+            <p>Crop insurance contract reads weather and triggers payouts.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="use-cases">
+        <div class="section-header">
+          <h2>Real-life use cases</h2>
+          <p>Where trusted weather data unlocks automation and protection.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <h3>Crop insurance</h3>
+            <p>Auto payout when rainfall or drought thresholds are hit.</p>
+          </article>
+          <article class="card">
+            <h3>Disaster coverage</h3>
+            <p>Trigger flood or storm alerts based on trusted feeds.</p>
+          </article>
+          <article class="card">
+            <h3>Smart agriculture</h3>
+            <p>Adapt irrigation and logistics using on-chain weather input.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="dashboard">
+        <div class="section-header">
+          <h2>Live node dashboard</h2>
+          <p>Node performance, availability, and latency snapshot.</p>
+        </div>
+        <div class="grid-3" id="node-grid">
+          <article class="card node-card">
+            <div class="node-header">
+              <h3>Node1</h3>
+              <span class="status online">Online</span>
+            </div>
+            <div class="node-metric">
+              <span>Trust score</span>
+              <strong data-trust="91">91</strong>
+            </div>
+            <div class="node-metric">
+              <span>Latency</span>
+              <strong data-latency="190">190 ms</strong>
+            </div>
+            <div class="node-metric">
+              <span>Availability</span>
+              <strong data-uptime="98">98%</strong>
+            </div>
+            <div class="node-bar">
+              <div class="bar" style="width: 91%"></div>
+            </div>
+          </article>
+          <article class="card node-card">
+            <div class="node-header">
+              <h3>Node2</h3>
+              <span class="status online">Online</span>
+            </div>
+            <div class="node-metric">
+              <span>Trust score</span>
+              <strong data-trust="86">86</strong>
+            </div>
+            <div class="node-metric">
+              <span>Latency</span>
+              <strong data-latency="215">215 ms</strong>
+            </div>
+            <div class="node-metric">
+              <span>Availability</span>
+              <strong data-uptime="96">96%</strong>
+            </div>
+            <div class="node-bar">
+              <div class="bar" style="width: 86%"></div>
+            </div>
+          </article>
+          <article class="card node-card">
+            <div class="node-header">
+              <h3>Node3</h3>
+              <span class="status warning">Degraded</span>
+            </div>
+            <div class="node-metric">
+              <span>Trust score</span>
+              <strong data-trust="74">74</strong>
+            </div>
+            <div class="node-metric">
+              <span>Latency</span>
+              <strong data-latency="320">320 ms</strong>
+            </div>
+            <div class="node-metric">
+              <span>Availability</span>
+              <strong data-uptime="92">92%</strong>
+            </div>
+            <div class="node-bar">
+              <div class="bar" style="width: 74%"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="stack">
+        <div class="section-header">
+          <h2>Technology stack</h2>
+          <p>Tools and platforms powering the weather oracle.</p>
+        </div>
+        <div class="grid-2">
+          <div class="stack-list">
+            <div class="stack-item">Blockchain: Solidity + Hardhat</div>
+            <div class="stack-item">Oracle nodes: Node.js + Axios</div>
+            <div class="stack-item">Frontend: React + MetaMask</div>
+            <div class="stack-item">API source: OpenWeatherMap</div>
+            <div class="stack-item">Network: Local Hardhat chain</div>
+          </div>
+          <div class="structure-card">
+            <h3>Project structure</h3>
+            <ul>
+              <li>contracts/ for WeatherOracle and CropInsurance</li>
+              <li>oracle-nodes/ for Node1, Node2, Node3</li>
+              <li>frontend/ for React dashboard</li>
+              <li>scripts/ for deployment</li>
+              <li>NewUI/ for this redesign</li>
+            </ul>
+            <button class="primary-button">Open Repo</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>Decentralized Weather Oracle</strong>
+        <p>Trusted weather data for crop insurance and smart agriculture.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#overview">Overview</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#dashboard">Dashboard</a>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
