@@ -1,6 +1,10 @@
 const axios = require("axios");
 const { ethers } = require("ethers");
-require("dotenv").config();
+require("dotenv").config({ path: "../.env" });
+
+const privateKey = process.env.PRIVATE_KEY;
+console.log("PRIVATE KEY:", privateKey);
+
 
 const ABI = [
   "function submitWeather(uint temp, uint rain) public",

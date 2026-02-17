@@ -1,6 +1,6 @@
 const axios = require("axios");
 const { ethers } = require("ethers");
-require("dotenv").config();
+require("dotenv").config({ path: "../.env" });
 
 const ABI = [
   "function submitWeather(uint temp, uint rain) public",
@@ -22,7 +22,7 @@ async function submitToBlockchain(temp, rain) {
   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
   const contract = new ethers.Contract(
-    process.env.CONTRACT_ADDRESS,
+    process.env.ORACLE_CONTRACT,
     ABI,
     wallet
   );

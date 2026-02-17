@@ -7,17 +7,24 @@ async function main() {
 
   const WeatherOracle = await hre.ethers.getContractFactory("WeatherOracle");
   const oracle = await WeatherOracle.deploy();
-  await oracle.deployed();
+  await oracle.waitForDeployment();   
 
-  console.log("WeatherOracle deployed to:", oracle.address);
+  const oracleAddress = await oracle.getAddress(); 
+  console.log("WeatherOracle deployed to:", oracleAddress);
 
   const CropInsurance = await hre.ethers.getContractFactory("CropInsurance");
-  const insurance = await CropInsurance.deploy(oracle.address, 10, {
-    value: hre.ethers.utils.parseEther("1"),
-  });
+  const insurance = await CropInsurance.deploy(
+    oracleAddress,
+    10,
+    {
+      value: hre.ethers.parseEther("1"), 
+    }
+  );
 
-  await insurance.deployed();
-  console.log("CropInsurance deployed to:", insurance.address);
+  await insurance.waitForDeployment();   
+
+  const insuranceAddress = await insurance.getAddress(); 
+  console.log("CropInsurance deployed to:", insuranceAddress);
 
   console.log("Done!");
 }
