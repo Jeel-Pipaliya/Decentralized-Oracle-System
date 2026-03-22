@@ -21,8 +21,10 @@
     "axios": "^1.13.5",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
+    "ethers": "^6.16.0",
     "express": "^4.21.2",
-    "ethers": "^6.16.0"
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^0.577.0"
   },
   "repository": {
     "type": "git",
