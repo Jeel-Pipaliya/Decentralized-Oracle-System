@@ -5,15 +5,17 @@ require("dotenv").config({ path: __dirname + "/../.env" });
 
 const ABI = [
   "function submitWeather(uint temp, uint rain) public",
+  "function currentRound() view returns(uint)",
+  "function hasSubmittedInRound(uint, address) view returns(bool)"
 ];
 
 async function fetchWeather() {
-  const url = `http://api.weatherapi.com/v1/current.json?key=${process.env.WEATHERAPI_KEY}&q=Surat&aqi=no`;
+  const url = `https://wttr.in/Surat?format=j1`;
 
   const res = await axios.get(url);
 
-  const temp = Math.floor(res.data.current.temp_c);
-  const rain = Math.floor(res.data.current.precip_mm || 0);
+  const temp = Math.floor(res.data.current_condition[0].temp_C);
+  const rain = Math.floor(res.data.current_condition[0].precipMM || 0);
 
   return { temp, rain };
 }
@@ -30,6 +32,13 @@ async function submitToBlockchain(temp, rain) {
     ABI,
     wallet
   );
+  
+  const round = await contract.currentRound();
+  const submitted = await contract.hasSubmittedInRound(round, wallet.address);
+  if (submitted) {
+    console.log(`Node2: Already submitted for round ${round}. Waiting for next round...`);
+    return;
+  }
 
   const tx = await contract.submitWeather(temp, rain);
   await tx.wait();

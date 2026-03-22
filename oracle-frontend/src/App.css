@@ -1,0 +1,138 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap");
+
+:root {
+	--bg: #f4f7fb;
+	--ink: #132238;
+	--muted: #5f728a;
+	--card: #ffffff;
+	--line: #d8e1ec;
+	--brand: #0f766e;
+	--brand-2: #115e59;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: "Sora", sans-serif;
+	color: var(--ink);
+	background:
+		radial-gradient(circle at 0% 0%, #e8effa 0, transparent 26%),
+		radial-gradient(circle at 100% 100%, #e7f7f3 0, transparent 30%),
+		var(--bg);
+}
+
+.dashboard-page {
+	max-width: 1080px;
+	margin: 0 auto;
+	padding: 18px 14px 28px;
+}
+
+.navbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 14px;
+}
+
+.navbar h2 {
+	margin: 0;
+	font-size: clamp(1.2rem, 2.3vw, 1.6rem);
+}
+
+.wallet,
+button {
+	border: 0;
+	border-radius: 12px;
+	padding: 10px 14px;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+	color: #fff;
+	background: var(--brand);
+}
+
+.wallet:hover,
+button:hover {
+	background: var(--brand-2);
+}
+
+button:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+.grid {
+	margin-top: 12px;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 14px;
+}
+
+.card {
+	background: var(--card);
+	border: 1px solid var(--line);
+	border-radius: 16px;
+	padding: 16px;
+	box-shadow: 0 12px 24px rgba(19, 34, 56, 0.08);
+}
+
+.hero {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 12px;
+}
+
+.hero h3,
+.card h3 {
+	margin: 0;
+}
+
+.hero p,
+.card p {
+	margin: 8px 0 0;
+	color: var(--muted);
+}
+
+.median {
+	font-size: clamp(1.6rem, 4vw, 2.2rem);
+	font-weight: 700;
+}
+
+.card-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+}
+
+.badge {
+	border: 1px solid #c8d5e8;
+	border-radius: 999px;
+	padding: 4px 10px;
+	color: #335070;
+	font-size: 0.82rem;
+}
+
+.response {
+	margin-top: 10px;
+	padding: 10px;
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
+	background: #f9fcff;
+}
+
+.notice {
+	margin: 14px 2px 0;
+	color: #8a5b11;
+}

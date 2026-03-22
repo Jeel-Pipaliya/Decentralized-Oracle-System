@@ -5,6 +5,8 @@ require("dotenv").config({ path: __dirname + "/../.env" });
 
 const ABI = [
   "function submitWeather(uint temp, uint rain) public",
+  "function currentRound() view returns(uint)",
+  "function hasSubmittedInRound(uint, address) view returns(bool)"
 ];
 
 async function fetchWeather() {
@@ -32,10 +34,17 @@ async function submitToBlockchain(temp, rain) {
     wallet
   );
 
+  const round = await contract.currentRound();
+  const submitted = await contract.hasSubmittedInRound(round, wallet.address);
+  if (submitted) {
+    console.log(`Node1: Already submitted for round ${round}. Waiting for next round...`);
+    return;
+  }
+
   const tx = await contract.submitWeather(temp, rain);
   await tx.wait();
 
-  console.log(`Submitted: Temp=${temp}°C Rain=${rain}mm`);
+  console.log(`Node1 Submitted: Temp=${temp}°C Rain=${rain}mm`);
 }
 
 async function start() {

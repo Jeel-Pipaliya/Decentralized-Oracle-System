@@ -28,39 +28,19 @@ export default function WeatherDashboard() {
     }
   };
 
-  const triggerAggregate = async () => {
-    try {
-      setMessage('Aggregating...');
-      await axios.post(`${API_BASE}/api/weather/aggregate`);
-      setMessage('Aggregation successful.');
-      await loadData();
-    } catch (error) {
-      setMessage(error.response?.data?.error || error.message);
-    }
-  };
-
-  const triggerPayoutCheck = async () => {
-    try {
-      setMessage('Checking payout...');
-      await axios.post(`${API_BASE}/api/insurance/check-pay`);
-      setMessage('Payout check completed.');
-      await loadData();
-    } catch (error) {
-      setMessage(error.response?.data?.error || error.message);
-    }
-  };
-
   useEffect(() => {
     loadData();
   }, []);
 
   return (
     <div className="dashboard">
+      <h1>Crop Insurance Portal</h1>
+      <p className="subtitle">Automated payouts based on decentralized weather data.</p>
       {loading ? <p className="hint">Loading...</p> : null}
 
       <div className="cards">
         <section className="card">
-          <h2>Latest Weather</h2>
+          <h2>Latest Weather Data</h2>
           {weather ? (
             <div className="stats">
               <p><span>Temperature</span><strong>{weather.temperature} C</strong></p>
@@ -75,10 +55,10 @@ export default function WeatherDashboard() {
         <section className="card">
           <h2>Insurance Status</h2>
           {insurance ? (
-            <div className="stats">
-              <p><span>Paid</span><strong>{insurance.paid ? 'Yes' : 'No'}</strong></p>
-              <p><span>Threshold</span><strong>{insurance.thresholdRainfall} mm</strong></p>
-              <p><span>Balance</span><strong>{insurance.balanceEth} ETH</strong></p>
+            <div className="stats" style={{ borderColor: insurance.paid ? 'green' : 'orange', borderWidth: '2px', borderStyle: 'solid', padding: '10px' }}>
+              <p><span>Status</span><strong>{insurance.paid ? 'PAID OUT ✅' : 'ACTIVE ☂️'}</strong></p>
+              <p><span>Trigger Threshold</span><strong>&lt; {insurance.thresholdRainfall} mm rain</strong></p>
+              <p><span>Coverage Balance</span><strong>{insurance.balanceEth} ETH</strong></p>
             </div>
           ) : (
             <p className="hint">No insurance data yet.</p>
@@ -87,9 +67,7 @@ export default function WeatherDashboard() {
       </div>
 
       <div className="actions">
-        <button onClick={loadData}>Refresh</button>
-        <button onClick={triggerAggregate}>Aggregate Median</button>
-        <button onClick={triggerPayoutCheck}>Check And Pay</button>
+        <button onClick={loadData}>Refresh Data</button>
       </div>
 
       {message ? <p className="hint">{message}</p> : null}

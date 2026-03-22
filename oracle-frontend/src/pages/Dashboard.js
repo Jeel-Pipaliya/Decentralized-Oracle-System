@@ -120,24 +120,14 @@ export default function Dashboard() {
   }
 
   async function createRequest() {
-    if (!contract) {
-      setNotice("Connect wallet first.");
-      return;
-    }
-
     setLoading(true);
     try {
-      if (contract.createRequest) {
-        const tx = await contract.createRequest("price");
-        await tx.wait();
-        setNotice("Request sent");
-      } else {
-        setNotice("Contract request function not available. Data refreshed instead.");
-      }
-
+      setNotice("Aggregating median via backend...");
+      await axios.post(`${API_BASE}/api/weather/aggregate`);
+      setNotice("Aggregation successful!");
       await loadLiveData();
     } catch (err) {
-      setNotice(err.message);
+      setNotice(err.response?.data?.error || err.message);
     } finally {
       setLoading(false);
     }

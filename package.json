@@ -11,6 +11,8 @@
     "oracle:node1": "node oracle-nodes/node1.js",
     "oracle:node2": "node oracle-nodes/node2.js",
     "oracle:node3": "node oracle-nodes/node3.js",
+    "start:oracle": "npm start --prefix oracle-frontend",
+    "start:insurance": "npm start --prefix insurance-frontend",
     "test": "npx hardhat test"
   },
   "devDependencies": {

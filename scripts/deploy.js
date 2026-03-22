@@ -43,6 +43,13 @@ async function main() {
   );
   console.log("Saved deployment addresses to:", outputPath);
 
+  const envPath = path.join(__dirname, "..", ".env");
+  let envContent = fs.existsSync(envPath) ? fs.readFileSync(envPath, "utf8") : "";
+  envContent = envContent.replace(/ORACLE_CONTRACT=.*/, `ORACLE_CONTRACT=${oracleAddress}`);
+  envContent = envContent.replace(/INSURANCE_CONTRACT=.*/, `INSURANCE_CONTRACT=${insuranceAddress}`);
+  fs.writeFileSync(envPath, envContent);
+  console.log("Updated .env with newly deployed contract addresses.");
+
   console.log("Done!");
 }
 

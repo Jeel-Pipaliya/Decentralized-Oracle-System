@@ -110,6 +110,36 @@ app.post("/api/insurance/check-pay", async (_req, res) => {
   }
 });
 
+async function startWatcher() {
+  console.log("Starting automatic payout watcher...");
+  setInterval(async () => {
+    try {
+      const weatherContract = getWeatherContract(false);
+      const currentRound = await weatherContract.currentRound();
+      // Ensure at least one aggregation has happened before auto-paying based on (0,0) defaults
+      if (Number(currentRound) <= 1) return;
+
+      const insuranceContractOrigin = getInsuranceContract(false);
+      const paid = await insuranceContractOrigin.paid();
+      if (paid) return;
+
+      const [temp, rainfall] = await weatherContract.getFinalWeather();
+      const threshold = await insuranceContractOrigin.thresholdRainfall();
+
+      if (Number(rainfall) < Number(threshold)) {
+        console.log(`[Watcher] Condition met: rainfall ${rainfall} < threshold ${threshold}. Triggering checkAndPay...`);
+        const insuranceContract = getInsuranceContract(true);
+        const tx = await insuranceContract.checkAndPay();
+        await tx.wait();
+        console.log(`[Watcher] checkAndPay successful. TX: ${tx.hash}`);
+      }
+    } catch (err) {
+      // Ignore errors such as contracts not being deployed yet
+    }
+  }, 10000);
+}
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  startWatcher();
 });
