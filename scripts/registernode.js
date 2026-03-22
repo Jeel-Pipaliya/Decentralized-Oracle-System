@@ -1,18 +1,33 @@
 const { ethers } = require("hardhat");
+require("dotenv").config();
 
 async function main() {
-  const contractAddress = "0x5fbdb2315678afecb367f032d93f642f64180aa3"; 
+  const contractAddress = process.env.ORACLE_CONTRACT;
+  const nodeAddresses = (process.env.ORACLE_NODE_ADDRESSES || "")
+    .split(",")
+    .map((addr) => addr.trim())
+    .filter(Boolean);
+
+  if (!contractAddress) {
+    throw new Error("ORACLE_CONTRACT is required in .env");
+  }
+
+  if (nodeAddresses.length === 0) {
+    throw new Error("ORACLE_NODE_ADDRESSES is required in .env (comma separated)");
+  }
 
   const [owner] = await ethers.getSigners();
+  console.log("Registering nodes with owner:", owner.address);
 
   const oracle = await ethers.getContractAt("WeatherOracle", contractAddress);
 
-  const nodeAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+  for (const nodeAddress of nodeAddresses) {
+    const tx = await oracle.registerNode(nodeAddress);
+    await tx.wait();
+    console.log("Node registered:", nodeAddress);
+  }
 
-  const tx = await oracle.registerNode(nodeAddress);
-  await tx.wait();
-
-  console.log("Node registered successfully!");
+  console.log("All nodes registered successfully!");
 }
 
 main().catch((error) => {

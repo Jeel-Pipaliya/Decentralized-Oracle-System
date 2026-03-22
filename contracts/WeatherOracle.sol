@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 contract WeatherOracle {
     address public owner;
+    uint public currentRound;
 
     struct OracleNode {
         bool authorized;
@@ -18,9 +19,11 @@ contract WeatherOracle {
 
     WeatherData[] public submissions;
     WeatherData public finalWeather;
+    mapping(uint => mapping(address => bool)) public hasSubmittedInRound;
 
     constructor() {
         owner = msg.sender;
+        currentRound = 1;
     }
 
     modifier onlyOwner() {
@@ -38,6 +41,8 @@ contract WeatherOracle {
     }
 
     function submitWeather(uint temp, uint rain) public onlyAuthorized {
+        require(!hasSubmittedInRound[currentRound][msg.sender], "Node already submitted in this round");
+        hasSubmittedInRound[currentRound][msg.sender] = true;
         submissions.push(WeatherData(temp, rain));
     }
 
@@ -78,6 +83,7 @@ contract WeatherOracle {
         finalWeather = WeatherData(temps[mid], rains[mid]);
 
         delete submissions;
+        currentRound += 1;
     }
 
     function getFinalWeather() public view returns(uint, uint) {

@@ -1,4 +1,6 @@
 const hre = require("hardhat");
+const fs = require("fs");
+const path = require("path");
 
 async function main() {
   const [deployer] = await hre.ethers.getSigners();
@@ -25,6 +27,21 @@ async function main() {
 
   const insuranceAddress = await insurance.getAddress(); 
   console.log("CropInsurance deployed to:", insuranceAddress);
+
+  const outputPath = path.join(__dirname, "..", "deployments.json");
+  fs.writeFileSync(
+    outputPath,
+    JSON.stringify(
+      {
+        network: hre.network.name,
+        weatherOracle: oracleAddress,
+        cropInsurance: insuranceAddress,
+      },
+      null,
+      2
+    )
+  );
+  console.log("Saved deployment addresses to:", outputPath);
 
   console.log("Done!");
 }
