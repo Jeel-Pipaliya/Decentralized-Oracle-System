@@ -21,6 +21,10 @@ contract WeatherOracle {
     WeatherData public finalWeather;
     mapping(uint => mapping(address => bool)) public hasSubmittedInRound;
 
+    event NodeRegistered(address indexed node);
+    event WeatherSubmitted(address indexed node, uint temperature, uint rainfall, uint round);
+    event WeatherAggregated(uint round, uint temperature, uint rainfall);
+
     constructor() {
         owner = msg.sender;
         currentRound = 1;
@@ -38,12 +42,14 @@ contract WeatherOracle {
 
     function registerNode(address node) public onlyOwner {
         nodes[node] = OracleNode(true, 100);
+        emit NodeRegistered(node);
     }
 
     function submitWeather(uint temp, uint rain) public onlyAuthorized {
         require(!hasSubmittedInRound[currentRound][msg.sender], "Node already submitted in this round");
         hasSubmittedInRound[currentRound][msg.sender] = true;
         submissions.push(WeatherData(temp, rain));
+        emit WeatherSubmitted(msg.sender, temp, rain, currentRound);
     }
 
     function aggregateMedian() public onlyOwner {
@@ -83,6 +89,7 @@ contract WeatherOracle {
         finalWeather = WeatherData(temps[mid], rains[mid]);
 
         delete submissions;
+        emit WeatherAggregated(currentRound, temps[mid], rains[mid]);
         currentRound += 1;
     }
 

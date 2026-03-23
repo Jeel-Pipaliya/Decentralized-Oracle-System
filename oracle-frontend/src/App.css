@@ -1,138 +1,182 @@
-@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap");
-
-:root {
-	--bg: #f4f7fb;
-	--ink: #132238;
-	--muted: #5f728a;
-	--card: #ffffff;
-	--line: #d8e1ec;
-	--brand: #0f766e;
-	--brand-2: #115e59;
-}
-
-* {
-	box-sizing: border-box;
-}
+/* oracle-frontend/src/App.css */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;600;700&display=swap');
 
 body {
-	margin: 0;
-	font-family: "Sora", sans-serif;
-	color: var(--ink);
-	background:
-		radial-gradient(circle at 0% 0%, #e8effa 0, transparent 26%),
-		radial-gradient(circle at 100% 100%, #e7f7f3 0, transparent 30%),
-		var(--bg);
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #0d1117;
+  color: #c9d1d9;
+  -webkit-font-smoothing: antialiased;
 }
 
-.dashboard-page {
-	max-width: 1080px;
-	margin: 0 auto;
-	padding: 18px 14px 28px;
+.oracle-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
-.navbar {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 14px;
+.oracle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.navbar h2 {
-	margin: 0;
-	font-size: clamp(1.2rem, 2.3vw, 1.6rem);
+.oracle-header h1 {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  color: #58a6ff;
+  letter-spacing: -0.5px;
 }
 
-.wallet,
-button {
-	border: 0;
-	border-radius: 12px;
-	padding: 10px 14px;
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	font: inherit;
-	font-weight: 600;
-	cursor: pointer;
-	color: #fff;
-	background: var(--brand);
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #161b22;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid #30363d;
+  font-family: 'Fira Code', monospace;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.85rem;
 }
 
-.wallet:hover,
-button:hover {
-	background: var(--brand-2);
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor; /* glow effect */
 }
 
-button:disabled {
-	opacity: 0.7;
-	cursor: not-allowed;
-}
-
-.grid {
-	margin-top: 12px;
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-	gap: 14px;
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .card {
-	background: var(--card);
-	border: 1px solid var(--line);
-	border-radius: 16px;
-	padding: 16px;
-	box-shadow: 0 12px 24px rgba(19, 34, 56, 0.08);
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
-.hero {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: baseline;
-	gap: 12px;
+.card:hover {
+  border-color: #8b949e;
+  transform: translateY(-2px);
 }
 
-.hero h3,
-.card h3 {
-	margin: 0;
+.stat-card h3 {
+  margin: 0 0 1rem 0;
+  color: #8b949e;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.hero p,
-.card p {
-	margin: 8px 0 0;
-	color: var(--muted);
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.median {
-	font-size: clamp(1.6rem, 4vw, 2.2rem);
-	font-weight: 700;
+.hash-value {
+  font-family: 'Fira Code', monospace;
+  font-size: 1.1rem;
+  color: #79c0ff;
+  word-break: break-all;
+  margin-top: 1rem;
 }
 
-.card-head {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 10px;
+/* Logs */
+.logs-card {
+  grid-column: 1 / -1;
+  padding: 2rem;
 }
 
-.badge {
-	border: 1px solid #c8d5e8;
-	border-radius: 999px;
-	padding: 4px 10px;
-	color: #335070;
-	font-size: 0.82rem;
+.logs-card h2 {
+  font-size: 1.2rem;
+  margin: 0 0 1.5rem 0;
+  color: #c9d1d9;
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 0.5rem;
 }
 
-.response {
-	margin-top: 10px;
-	padding: 10px;
-	border: 1px solid var(--line);
-	border-radius: 10px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	gap: 8px;
-	background: #f9fcff;
+.logs-container {
+  max-height: 400px;
+  overflow-y: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  background: #0d1117;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #21262d;
 }
 
-.notice {
-	margin: 14px 2px 0;
-	color: #8a5b11;
+/* Custom Scrollbar for Logs */
+.logs-container::-webkit-scrollbar {
+  width: 8px;
+}
+.logs-container::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+.logs-container::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+
+.log-entry {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed #21262d;
+  align-items: center;
+}
+.log-entry:last-child {
+  border-bottom: none;
+}
+
+.log-time {
+  color: #8b949e;
+  min-width: 100px;
+}
+
+.log-type {
+  font-weight: 600;
+  min-width: 160px;
+}
+
+.log-details {
+  color: #c9d1d9;
+  flex: 1;
+}
+
+.log-tx {
+  color: #8b949e;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.log-empty {
+  color: #8b949e;
+  text-align: center;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .log-entry {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
 }

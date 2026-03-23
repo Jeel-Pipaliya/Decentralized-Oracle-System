@@ -1,155 +1,108 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "../components/Navbar";
-import RequestCard from "../components/RequestCard";
-import ResponseList from "../components/ResponseList";
-import Leaderboard from "../components/Leaderboard";
-import { getContract } from "../utils/contract";
+import "../App.css"; // Ensure styles are linked
 
 const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:3000";
-const localOracleAddrs = [
-  "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-  "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
-  "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-];
 
 export default function Dashboard() {
-  const [account, setAccount] = useState("");
-  const [responses, setResponses] = useState([]);
-  const [oracles, setOracles] = useState([]);
-  const [contract, setContract] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [latestWeather, setLatestWeather] = useState(null);
-  const [notice, setNotice] = useState("");
-
-  const median = useMemo(() => {
-    if (!responses.length) return null;
-    const values = responses.map((r) => r.rainfall).sort((a, b) => a - b);
-    return values[Math.floor(values.length / 2)];
-  }, [responses]);
+  const [weather, setWeather] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [status, setStatus] = useState("Idle"); // Running / Error / Idle
+  const [lastTx, setLastTx] = useState("None");
+  const [lastUpdated, setLastUpdated] = useState("Never");
 
   useEffect(() => {
-    init();
+    fetchData();
+    const timer = setInterval(fetchData, 5000);
+    return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    const timer = setInterval(loadLiveData, 7000);
-    return () => clearInterval(timer);
-  }, [contract]);
-
-  async function init() {
-    await loadLiveData();
-    if (window.ethereum) {
-      try {
-        const c = await getContract();
-        setContract(c);
-        const signer = await c.runner.getAddress();
-        setAccount(signer);
-      } catch (err) {
-        setNotice(err.message);
-      }
-    }
-  }
-
-  async function connectWallet() {
-    if (!window.ethereum) {
-      setNotice("Install MetaMask to connect wallet.");
-      return;
-    }
-
+  async function fetchData() {
     try {
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      const c = await getContract();
-      setContract(c);
-      const signer = await c.runner.getAddress();
-      setAccount(signer);
-      setNotice("Wallet connected");
-    } catch (err) {
-      setNotice(err.message);
-    }
-  }
-
-  async function getOnchainResponses(c) {
-    if (!c) return [];
-    const list = [];
-
-    for (let i = 0; i < 12; i += 1) {
-      try {
-        const item = await c.submissions(i);
-        list.push({
-          node: `Node ${i + 1}`,
-          rainfall: Number(item.rainfall),
-        });
-      } catch (_e) {
-        break;
-      }
-    }
-
-    return list;
-  }
-
-  function buildLeaderboard(liveResponses, medianValue) {
-    if (!liveResponses.length || medianValue === null) return [];
-
-    return liveResponses.map((r, i) => ({
-      address: localOracleAddrs[i] || `0xNode${i + 1}`,
-      score: Math.max(40, 100 - Math.abs(r.rainfall - medianValue) * 18),
-    }));
-  }
-
-  async function loadLiveData() {
-    try {
-      const [weatherRes] = await Promise.all([
+      setStatus("Running");
+      const [weatherRes, historyRes] = await Promise.all([
         axios.get(`${API_BASE}/api/weather/final`),
+        axios.get(`${API_BASE}/api/oracle/history`)
       ]);
 
-      setLatestWeather(weatherRes.data);
+      setWeather(weatherRes.data);
+      const logs = historyRes.data || [];
+      setHistory(logs);
 
-      const c = contract || (window.ethereum ? await getContract() : null);
-      if (!contract && c) setContract(c);
-
-      const liveResponses = await getOnchainResponses(c);
-      setResponses(liveResponses);
-
-      const values = liveResponses.map((r) => r.rainfall).sort((a, b) => a - b);
-      const m = values.length ? values[Math.floor(values.length / 2)] : null;
-      setOracles(buildLeaderboard(liveResponses, m));
+      if (logs.length > 0) {
+        setLastTx(logs[0].txHash);
+        // Approximation of time based on when we fetched it, or just use current time
+        setLastUpdated(new Date().toLocaleTimeString());
+      }
+      setStatus("Idle");
     } catch (err) {
-      setNotice(err.message);
+      console.error(err);
+      setStatus("Error");
     }
   }
 
-  async function createRequest() {
-    setLoading(true);
-    try {
-      setNotice("Aggregating median via backend...");
-      await axios.post(`${API_BASE}/api/weather/aggregate`);
-      setNotice("Aggregation successful!");
-      await loadLiveData();
-    } catch (err) {
-      setNotice(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+  // Determine status color
+  const statusColor = status === "Error" ? "#ff4d4f" : status === "Running" ? "#52c41a" : "#1890ff";
 
   return (
-    <div className="dashboard-page">
-      <Navbar account={account} onConnect={connectWallet} />
+    <div className="oracle-dashboard">
+      <header className="oracle-header">
+        <h1>Weather Oracle Monitor</h1>
+        <div className="status-indicator">
+          <span className="dot" style={{ backgroundColor: statusColor }}></span>
+          <span>{status}</span>
+        </div>
+      </header>
 
-      <div className="hero card">
-        <h3>Median Result</h3>
-        <div className="median">{median ?? latestWeather?.rainfall ?? "-"} mm</div>
-        <p>Round: {latestWeather?.currentRound ?? "-"}</p>
-      </div>
+      <main className="oracle-content">
+        <div className="cards-grid">
+          <div className="card stat-card">
+            <h3>Median Temperature</h3>
+            <div className="stat-value">{weather?.temperature ?? "--"} °C</div>
+          </div>
+          
+          <div className="card stat-card">
+            <h3>Median Rainfall</h3>
+            <div className="stat-value">{weather?.rainfall ?? "--"} mm</div>
+          </div>
 
-      <div className="grid">
-        <RequestCard createRequest={createRequest} loading={loading} />
-        <ResponseList responses={responses} median={median} />
-        <Leaderboard oracles={oracles} />
-      </div>
+          <div className="card stat-card">
+            <h3>Last Updated</h3>
+            <div className="stat-value" style={{ fontSize: "1.2rem", marginTop: "1rem" }}>{lastUpdated}</div>
+          </div>
+          
+          <div className="card stat-card">
+            <h3>Last Transaction Hash</h3>
+            <div className="stat-value hash-value">
+              {lastTx !== "None" ? `${lastTx.substring(0, 10)}...${lastTx.substring(lastTx.length - 8)}` : "None"}
+            </div>
+          </div>
+        </div>
 
-      {notice ? <p className="notice">{notice}</p> : null}
+        <div className="card logs-card">
+          <h2>Logs & History</h2>
+          <div className="logs-container">
+            {history.length > 0 ? (
+              history.slice(0, 20).map((log, i) => (
+                <div key={i} className="log-entry">
+                  <span className="log-time">[Block {log.blockNumber}]</span>
+                  <span className="log-type" style={{ color: log.type === 'WeatherAggregated' ? '#e2b3ff' : '#69b1ff' }}>
+                    {log.type}
+                  </span>
+                  <span className="log-details">
+                    {log.type === "WeatherSubmitted" 
+                      ? `Node ${log.node.substring(0,6)}... submitted Temp: ${log.temperature}°C, Rain: ${log.rainfall}mm`
+                      : `Aggregated Round ${log.round} - Temp: ${log.temperature}°C, Rain: ${log.rainfall}mm`}
+                  </span>
+                  <span className="log-tx">TX: {log.txHash.substring(0,10)}...</span>
+                </div>
+              ))
+            ) : (
+              <div className="log-empty">No history logs to display yet.</div>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
