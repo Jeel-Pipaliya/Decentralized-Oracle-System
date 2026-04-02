@@ -132,6 +132,29 @@ button:disabled {
 	background: #f9fcff;
 }
 
+.stats p {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	margin: 10px 0 0;
+}
+
+.stats span {
+	color: var(--muted);
+}
+
+.actions {
+	margin-top: 14px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.hint {
+	margin: 10px 2px 0;
+	color: var(--muted);
+}
+
 .notice {
 	margin: 14px 2px 0;
 	color: #8a5b11;

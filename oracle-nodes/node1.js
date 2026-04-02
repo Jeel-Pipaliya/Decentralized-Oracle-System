@@ -39,14 +39,22 @@ async function submitToBlockchain(temp, rain) {
 }
 
 async function start() {
-  setInterval(async () => {
+  const loop = async () => {
     try {
       const { temp, rain } = await fetchWeather();
       await submitToBlockchain(temp, rain);
     } catch (err) {
-      console.log("Error:", err.message);
+      const message = err?.shortMessage || err?.reason || err.message;
+      if (message.includes("already submitted") || message.includes("Not authorized")) {
+        console.log(`Skipped submit: ${message}`);
+      } else {
+        console.log("Error:", message);
+      }
     }
-  }, 15000);
+  };
+
+  await loop();
+  setInterval(loop, 15000);
 }
 
 start();

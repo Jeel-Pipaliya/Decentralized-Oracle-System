@@ -94,6 +94,89 @@ Fake value ignored.
 
 ---
 
+## ⚙️ Environment Setup
+
+1. Copy `.env.example` to `.env` and fill required values.
+2. Set `ORACLE_NODE_ADDRESSES` to three wallets that will run node scripts.
+3. After deployment, update these two addresses in `.env`:
+	- `ORACLE_CONTRACT`
+	- `INSURANCE_CONTRACT`
+
+---
+
+## ▶️ Run End-to-End (Local)
+
+Open separate terminals and run in this order:
+
+1. Start Hardhat local chain
+```bash
+npm run start
+```
+
+2. Deploy contracts
+```bash
+npm run deploy
+```
+
+3. Register oracle nodes
+```bash
+npm run register:nodes
+```
+
+4. Start backend API
+```bash
+npm run backend
+```
+
+5. Start three oracle node processes
+```bash
+npm run oracle:node1
+npm run oracle:node2
+npm run oracle:node3
+```
+
+6. Start frontend
+```bash
+npm run frontend
+```
+
+7. Optional one-shot e2e round script
+```bash
+npm run e2e:round
+```
+
+---
+
+## 🔌 Backend APIs
+
+- `GET /api/health` - API health check
+- `GET /api/weather/final` - final aggregated weather + round metadata
+- `GET /api/weather/submissions` - submissions in current round
+- `GET /api/oracle/nodes` - configured node authorization statuses
+- `GET /api/insurance/status` - insurance policy and payout status
+- `GET /api/system/overview` - combined weather + insurance + action readiness
+- `POST /api/weather/aggregate` - owner call to aggregate median
+- `POST /api/insurance/check-pay` - owner call to run payout check
+
+---
+
+## 🧪 Testing
+
+Run contract tests:
+
+```bash
+npm test
+```
+
+Current tests cover:
+- Owner-only node registration
+- Authorized node submission checks
+- One submission per node per round
+- Median aggregation with outlier input
+- Crop insurance payout and replay protection
+
+---
+
 ## 📁 Project Folder Structure
 
 weather-oracle-project/

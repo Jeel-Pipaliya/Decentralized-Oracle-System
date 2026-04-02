@@ -1,8 +1,8 @@
-import Dashboard from "./pages/Dashboard";
+import WeatherDashboard from "./WeatherDashboard";
 import "./App.css";
 
 function App() {
-  return <Dashboard />;
+  return <WeatherDashboard />;
 }
 
 export default App;

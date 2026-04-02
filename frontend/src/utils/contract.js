@@ -4,12 +4,12 @@ const contractAddress =
   process.env.REACT_APP_ORACLE_CONTRACT || "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318";
 
 const abi = [
-  "function createRequest(string memory url)",
-  "function requestCount() view returns(uint)",
-  "function requests(uint) view returns(uint id, string url, bool fulfilled)",
   "function submissions(uint) view returns(uint temperature, uint rainfall)",
   "function getFinalWeather() view returns(uint,uint)",
   "function currentRound() view returns(uint)",
+  "function lastAggregatedRound() view returns(uint)",
+  "function getSubmissionCount() view returns(uint)",
+  "function aggregateMedian()",
 ];
 
 export const getContract = async () => {

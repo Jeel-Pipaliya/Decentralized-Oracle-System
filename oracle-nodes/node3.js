@@ -6,15 +6,35 @@ const ABI = [
   "function submitWeather(uint temp, uint rain) public",
 ];
 
-async function fetchWeather() {
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=Surat&appid=${process.env.OPENWEATHER_KEY}&units=metric`;
+async function fetchFallbackWeather() {
+  const url =
+    "https://api.open-meteo.com/v1/forecast?latitude=21.1702&longitude=72.8311&current=temperature_2m,precipitation,rain&timezone=auto";
 
   const res = await axios.get(url);
+  return {
+    temp: Math.floor(res.data.current.temperature_2m),
+    rain: Math.floor(res.data.current.rain || 0),
+  };
+}
 
-  const temp = Math.floor(res.data.main.temp);
-  const rain = Math.floor(res.data.rain?.["1h"] || 0);
+async function fetchWeather() {
+  if (!process.env.OPENWEATHER_KEY) {
+    return fetchFallbackWeather();
+  }
 
-  return { temp, rain };
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=Surat&appid=${process.env.OPENWEATHER_KEY}&units=metric`;
+
+  try {
+    const res = await axios.get(url);
+
+    const temp = Math.floor(res.data.main.temp);
+    const rain = Math.floor(res.data.rain?.["1h"] || 0);
+
+    return { temp, rain };
+  } catch (_error) {
+    // Fall back to a free API when key is invalid/rate-limited.
+    return fetchFallbackWeather();
+  }
 }
 
 async function submitToBlockchain(temp, rain) {
@@ -37,14 +57,22 @@ async function submitToBlockchain(temp, rain) {
 }
 
 async function start() {
-  setInterval(async () => {
+  const loop = async () => {
     try {
       const { temp, rain } = await fetchWeather();
       await submitToBlockchain(temp, rain);
     } catch (err) {
-      console.log("Node3 Error:", err.message);
+      const message = err?.shortMessage || err?.reason || err.message;
+      if (message.includes("already submitted") || message.includes("Not authorized")) {
+        console.log(`Node3 skipped submit: ${message}`);
+      } else {
+        console.log("Node3 Error:", message);
+      }
     }
-  }, 25000);
+  };
+
+  await loop();
+  setInterval(loop, 25000);
 }
 
 start();
